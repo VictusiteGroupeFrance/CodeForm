@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <title>CodeForm — Apprendre à coder</title>
+
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #151d31;
+      --panel-light: #202b43;
+      --text: #edf2ff;
+      --muted: #a9b5ce;
+      --border: #2c3854;
+      --orange: #ff9a3c;
+      --blue: #63a8ff;
+      --green: #64e6b1;
+      --red: #ff8293;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 80% 0, #26356a 0, transparent 38%), var(--bg);
+      color: var(--text);
+      font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .container {
+      width: min(950px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      color: var(--text);
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      text-decoration: none;
+    }
+
+    .logo-code { color: var(--orange); }
+    .logo-form { color: var(--blue); }
+
+    main { padding: 36px 0 60px; }
+
+    .panel, .progress-card, .lesson-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    .panel {
+      padding: 24px;
+      box-shadow: 0 16px 40px #0003;
+    }
+
+    .account-panel {
+      max-width: 470px;
+      margin: 20px auto;
+    }
+
+    h1, h2, h3 { line-height: 1.2; }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 8px 0 12px; }
+    h2 { margin-top: 0; }
+    p { color: var(--muted); }
+
+    .eyebrow {
+      color: var(--blue);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    label.field-label {
+      display: block;
+      margin: 16px 0 6px;
+      font-weight: 700;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      color: var(--text);
+      background: #0d1425;
+      border: 1px solid #394765;
+      border-radius: 9px;
+    }
+
+    input:focus {
+      outline: 2px solid var(--blue);
+      outline-offset: 1px;
+    }
+
+    .button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 11px 16px;
+      color: #10172a;
+      background: var(--blue);
+      border: 0;
+      border-radius: 9px;
+      font-weight: 800;
+    }
+
+    .button:hover { filter: brightness(1.1); }
+    .button.full { width: 100%; margin-top: 18px; }
+
+    .button.secondary {
+      color: var(--text);
+      background: var(--panel-light);
+      border: 1px solid var(--border);
+    }
+
+    .link-button {
+      padding: 0;
+      color: var(--blue);
+      background: none;
+      border: 0;
+      text-decoration: underline;
+    }
+
+    .message {
+      min-height: 24px;
+      font-weight: 700;
+    }
+
+    .error { color: var(--red); }
+    .success { color: var(--green); }
+    .small { font-size: .9rem; }
+
+    .top-row, .progress-row, .lesson-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .top-row { margin-bottom: 24px; }
+    .top-row h1 { margin: 4px 0; font-size: clamp(1.6rem, 4vw, 2.3rem); }
+
+    .progress-card {
+      padding: 18px;
+      margin-bottom: 26px;
+    }
+
+    .progress-row { margin-bottom: 10px; }
+    progress { width: 100%; height: 12px; accent-color: var(--green); }
+
+    .lesson-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin: 18px 0 24px;
+    }
+
+    .lesson-card {
+      padding: 16px;
+      color: var(--text);
+      text-align: left;
+    }
+
+    .lesson-card:hover, .lesson-card.active { border-color: var(--blue); }
+    .lesson-card h3 { margin: 7px 0; }
+    .lesson-card p { margin: 0; font-size: .9rem; }
+    .badge { color: var(--green); font-size: .8rem; font-weight: 800; }
+
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      color: #dce6ff;
+      background: #080d18;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    code { font-family: ui-monospace, Consolas, monospace; }
+
+    .quiz {
+      margin-top: 20px;
+      padding: 18px;
+      background: #10182a;
+      border-radius: 12px;
+    }
+
+    .option {
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+      margin: 8px 0;
+      background: var(--panel-light);
+      border-radius: 9px;
+      cursor: pointer;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 600px) {
+      .top-row, .lesson-heading { align-items: flex-start; }
+      .panel { padding: 19px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <a class="logo" href="#" aria-label="CodeForm">
+        <span class="logo-code">Code</span><span class="logo-form">Form</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="accountView" class="panel account-panel">
+      <div class="eyebrow">Apprendre à coder</div>
+      <h1 id="formTitle">Créer un compte CodeForm</h1>
+      <p>Crée un compte local pour suivre ta progression dans ce navigateur.</p>
+
+      <form id="accountForm" novalidate>
+        <label class="field-label" for="username">Nom de compte</label>
+        <input id="username" type="text" maxlength="30" autocomplete="username">
+
+        <label class="field-label" for="password">Mot de passe</label>
+        <input id="password" type="password" autocomplete="new-password">
+
+        <button id="submitButton" class="button full" type="submit">Créer mon compte</button>
+        <p id="accountMessage" class="message" role="status" aria-live="polite"></p>
+      </form>
+
+      <p class="small">
+        <span id="switchText">Tu as déjà un compte ?</span>
+        <button id="switchButton" class="link-button" type="button">Se connecter</button>
+      </p>
+      <p class="small">Version de démonstration locale : n’utilise pas un vrai mot de passe.</p>
+    </section>
+
+    <section id="learningView" hidden>
+      <div class="panel">
+        <div class="top-row">
+          <div>
+            <div class="eyebrow">Espace d’apprentissage</div>
+            <h1>Bonjour, <span id="displayName"></span> !</h1>
+          </div>
+          <button id="logoutButton" class="button secondary" type="button">Déconnexion</button>
+        </div>
+
+        <div class="progress-card">
+          <div class="progress-row">
+            <strong>Ta progression</strong>
+            <span id="progressText"></span>
+          </div>
+          <progress id="progressBar" max="6" value="0" aria-label="Progression des leçons"></progress>
+        </div>
+
+        <h2>Le parcours débutant</h2>
+        <p>Choisis une leçon et réponds à la question pour enregistrer ta progression.</p>
+        <div id="lessonList" class="lesson-list"></div>
+
+        <article id="lessonPanel" class="panel" hidden>
+          <div class="lesson-heading">
+            <div>
+              <div id="lessonTag" class="eyebrow"></div>
+              <h2 id="lessonTitle"></h2>
+            </div>
+            <span id="lessonStatus" class="badge"></span>
+          </div>
+
+          <p id="lessonDescription"></p>
+          <pre><code id="lessonCode"></code></pre>
+
+          <div class="quiz">
+            <h3 id="question"></h3>
+            <form id="quizForm" novalidate>
+              <div id="options"></div>
+              <button class="button" type="submit">Vérifier ma réponse</button>
+              <p id="quizMessage" class="message" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    "use strict";
+
+    const USERS_KEY = "codeform_users_v3";
+    const SESSION_KEY = "codeform_session_v3";
+
+    const lessons = [
+      {
+        id: "html-1",
+        tag: "HTML · Leçon 1",
+        title: "Les titres HTML",
+        description: "HTML sert à structurer le contenu d’une page. La balise h1 représente le titre principal.",
+        code: "<h1>Mon titre</h1>\n<p>Mon paragraphe</p>",
+        question: "Quelle balise crée le titre principal ?",
+        options: ["<h1>", "<p>", "<img>"],
+        answer: 0
+      },
+      {
+        id: "html-2",
+        tag: "HTML · Leçon 2",
+        title: "Les liens",
+        description: "La balise a crée un lien. L’attribut href indique sa destination.",
+        code: '<a href="https://example.com">Visiter le site</a>',
+        question: "Quel attribut contient l’adresse du lien ?",
+        options: ["src", "href", "class"],
+        answer: 1
+      },
+      {
+        id: "css-1",
+        tag: "CSS · Leçon 1",
+        title: "Les couleurs",
+        description: "CSS permet de modifier l’apparence de la page.",
+        code: "h1 {\n  color: orange;\n}",
+        question: "Quelle propriété change la couleur du texte ?",
+        options: ["background", "color", "font"],
+        answer: 1
+      },
+      {
+        id: "css-2",
+        tag: "CSS · Leçon 2",
+        title: "Les espacements",
+        description: "padding ajoute de l’espace à l’intérieur d’un élément.",
+        code: ".carte {\n  padding: 16px;\n  margin: 12px;\n}",
+        question: "Quelle propriété ajoute de l’espace à l’intérieur ?",
+        options: ["margin", "padding", "color"],
+        answer: 1
+      },
+      {
+        id: "js-1",
+        tag: "JavaScript · Leçon 1",
+        title: "Les variables",
+        description: "JavaScript permet de rendre une page interactive. const déclare une constante.",
+        code: 'const prenom = "Alex";\nconsole.log(prenom);',
+        question: "Quel mot-clé déclare une constante ?",
+        options: ["const", "color", "href"],
+        answer: 0
+      },
+      {
+        id: "js-2",
+        tag: "JavaScript · Leçon 2",
+        title: "Afficher un message",
+        description: "console.log permet d’afficher une valeur dans la console du navigateur.",
+        code: 'console.log("Bonjour !");',
+        question: "Quelle instruction affiche un message dans la console ?",
+        options: ["console.log()", "color()", "href()"],
+        answer: 0
+      }
+    ];
+
+    const $ = id => document.getElementById(id);
+    let loginMode = false;
+    let selectedLessonId = null;
+
+    function readUsers() {
+      const saved = localStorage.getItem(USERS_KEY);
+      if (!saved) return {};
+
+      const users = JSON.parse(saved);
+      if (!users || typeof users !== "object" || Array.isArray(users)) {
+        throw new Error("Les données des comptes sont illisibles.");
+      }
+      return users;
+    }
+
+    function showAccountMessage(text, type = "error") {
+      const message = $("accountMessage");
+      message.textContent = text;
+      message.className = "message" + (text ? " " + type : "");
+    }
+
+    function currentUser() {
+      const key = localStorage.getItem(SESSION_KEY);
+      if (!key) return null;
+      return readUsers()[key] || null;
+    }
+
+    function showLearning(key) {
+      const user = readUsers()[key];
+
+      if (!user) {
+        localStorage.removeItem(SESSION_KEY);
+        $("accountView").hidden = false;
+        $("learningView").hidden = true;
+        showAccountMessage("Compte introuvable. Essaie de te reconnecter.");
+        return;
+      }
+
+      $("accountView").hidden = true;
+      $("learningView").hidden = false;
+      $("displayName").textContent = user.username;
+
+      if (!selectedLessonId) selectedLessonId = lessons[0].id;
+      renderLessons();
+      openLesson(selectedLessonId);
+    }
+
+    function renderLessons() {
+      const user = currentUser();
+      if (!user) return;
+
+      const completed = Array.isArray(user.completed) ? user.completed : [];
+      $("progressBar").value = completed.length;
+      $("progressText").textContent =
+        `${completed.length} sur ${lessons.length} leçons terminées`;
+
+      const list = $("lessonList");
+      list.replaceChildren();
+
+      lessons.forEach((lesson, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "lesson-card" +
+          (selectedLessonId === lesson.id ? " active" : "");
+
+        const badge = document.createElement("span");
+        badge.className = "badge";
+        badge.textContent = completed.includes(lesson.id)
+          ? "✓ Terminée"
+          : `Leçon ${index + 1}`;
+
+        const title = document.createElement("h3");
+        title.textContent = lesson.title;
+
+        const tag = document.createElement("p");
+        tag.textContent = lesson.tag;
+
+        button.append(badge, title, tag);
+        button.addEventListener("click", () => openLesson(lesson.id));
+        list.appendChild(button);
+      });
+    }
+
+    function openLesson(id) {
+      const lesson = lessons.find(item => item.id === id);
+      if (!lesson) return;
+
+      selectedLessonId = id;
+      const user = currentUser();
+      const completed = user && Array.isArray(user.completed)
+        ? user.completed
+        : [];
+
+      $("lessonPanel").hidden = false;
+      $("lessonTag").textContent = lesson.tag;
+      $("lessonTitle").textContent = lesson.title;
+      $("lessonDescription").textContent = lesson.description;
+      $("lessonCode").textContent = lesson.code;
+      $("question").textContent = lesson.question;
+      $("lessonStatus").textContent =
+        completed.includes(id) ? "✓ Terminée" : "À faire";
+      $("quizMessage").textContent = "";
+      $("quizMessage").className = "message";
+
+      const options = $("options");
+      options.replaceChildren();
+
+      lesson.options.forEach((text, index) => {
+        const label = document.createElement("label");
+        label.className = "option";
+
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "answer";
+        radio.value = String(index);
+
+        const optionText = document.createElement("span");
+        optionText.textContent = text;
+
+        label.append(radio, optionText);
+        options.appendChild(label);
+      });
+
+      renderLessons();
+    }
+
+    $("switchButton").addEventListener("click", () => {
+      loginMode = !loginMode;
+      $("accountForm").reset();
+
+      $("formTitle").textContent = loginMode
+        ? "Se connecter à CodeForm"
+        : "Créer un compte CodeForm";
+      $("submitButton").textContent = loginMode
+        ? "Se connecter"
+        : "Créer mon compte";
+      $("switchText").textContent = loginMode
+        ? "Pas encore de compte ?"
+        : "Tu as déjà un compte ?";
+      $("switchButton").textContent = loginMode
+        ? "Créer un compte"
+        : "Se connecter";
+      $("password").autocomplete = loginMode
+        ? "current-password"
+        : "new-password";
+
+      showAccountMessage("");
+    });
+
+    $("accountForm").addEventListener("submit", event => {
+      event.preventDefault();
+
+      const username = $("username").value.trim();
+      const password = $("password").value;
+      const key = username.toLowerCase();
+
+      if (username.length < 3) {
+        showAccountMessage("Le nom de compte doit contenir au moins 3 caractères.");
+        return;
+      }
+
+      if (password.length < 4) {
+        showAccountMessage("Le mot de passe doit contenir au moins 4 caractères.");
+        return;
+      }
+
+      try {
+        const users = readUsers();
+
+        if (loginMode) {
+          const user = users[key];
+
+          if (!user) {
+            showAccountMessage("Compte introuvable. Crée d’abord un compte.");
+            return;
+          }
+
+          if (user.password !== password) {
+            showAccountMessage("Mot de passe incorrect.");
+            return;
+          }
+        } else {
+          if (users[key]) {
+            showAccountMessage("Ce nom de compte existe déjà. Essaie de te connecter.");
+            return;
+          }
+
+          users[key] = {
+            username: username,
+            password: password,
+            completed: []
+          };
+
+          localStorage.setItem(USERS_KEY, JSON.stringify(users));
+
+          if (!readUsers()[key]) {
+            showAccountMessage("Le navigateur n’a pas confirmé la création du compte.");
+            return;
+          }
+        }
+
+        localStorage.setItem(SESSION_KEY, key);
+        $("accountForm").reset();
+        selectedLessonId = lessons[0].id;
+        showLearning(key);
+      } catch (error) {
+        console.error("Erreur CodeForm :", error);
+        showAccountMessage(
+          "Enregistrement impossible dans ce navigateur. " +
+          (error && error.message ? error.message : "")
+        );
+      }
+    });
+
+    $("quizForm").addEventListener("submit", event => {
+      event.preventDefault();
+
+      const lesson = lessons.find(item => item.id === selectedLessonId);
+      const selected = document.querySelector('input[name="answer"]:checked');
+
+      if (!lesson || !selected) {
+        $("quizMessage").textContent = "Choisis une réponse avant de continuer.";
+        $("quizMessage").className = "message error";
+        return;
+      }
+
+      if (Number(selected.value) !== lesson.answer) {
+        $("quizMessage").textContent = "Ce n’est pas encore la bonne réponse. Réessaie !";
+        $("quizMessage").className = "message error";
+        return;
+      }
+
+      try {
+        const key = localStorage.getItem(SESSION_KEY);
+        const users = readUsers();
+        const user = key ? users[key] : null;
+
+        if (!user) throw new Error("Compte introuvable.");
+
+        user.completed = Array.isArray(user.completed) ? user.completed : [];
+        if (!user.completed.includes(lesson.id)) {
+          user.completed.push(lesson.id);
+        }
+
+        localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        $("quizMessage").textContent = "Bonne réponse ! Progression enregistrée.";
+        $("quizMessage").className = "message success";
+        $("lessonStatus").textContent = "✓ Terminée";
+        renderLessons();
+      } catch (error) {
+        console.error("Erreur de sauvegarde :", error);
+        $("quizMessage").textContent = "Impossible d’enregistrer la progression.";
+        $("quizMessage").className = "message error";
+      }
+    });
+
+    $("logoutButton").addEventListener("click", () => {
+      try {
+        localStorage.removeItem(SESSION_KEY);
+      } catch (error) {
+        console.error(error);
+      }
+
+      selectedLessonId = null;
+      $("learningView").hidden = true;
+      $("lessonPanel").hidden = true;
+      $("accountView").hidden = false;
+      $("accountForm").reset();
+      showAccountMessage("");
+    });
+
+    // Au démarrage, le message reste vide.
+    try {
+      const savedKey = localStorage.getItem(SESSION_KEY);
+      if (savedKey && readUsers()[savedKey]) {
+        showLearning(savedKey);
+      }
+    } catch (error) {
+      console.error("Erreur au démarrage :", error);
+      showAccountMessage("Le stockage local est indisponible dans ce navigateur.");
+    }
+  </script>
+</body>
+</html>
